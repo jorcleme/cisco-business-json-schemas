@@ -1,0 +1,134 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$comment": "Cisco Business Video Schema",
+    "$id": "https://jorcleme.github.io/cisco-business-json-schemas/schemas/videos/videos.json",
+    "title": "Cisco Business Video Schema",
+    "version": "1.0.0",
+    "type": "object",
+    "properties": {
+        "title": {
+            "type": "string",
+            "description": "The title of the video."
+        },
+        "published_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The date and time when the video was published."
+        },
+        "description": {
+            "type": "string",
+            "description": "A description of the video."
+        },
+        "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "The URL of the video."
+        },
+        "video_id": {
+            "type": "string",
+            "description": "The unique identifier of the video."
+        },
+        "views": {
+            "type": "integer",
+            "default": 0,
+            "description": "The number of views the video has received."
+        },
+        "likes": {
+            "type": "integer",
+            "default": 0,
+            "description": "The number of likes the video has received."
+        },
+        "duration": {
+            "type": "string",
+            "description": "The duration of the video in ISO 8601 format.",
+            "examples": ["PT3M48S"]
+        },
+        "comments": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "title": "The number of comments on the video",
+            "description": "The number of comments on the video."
+        },
+        "kind": {
+            "type": "string",
+            "enum": ["youtube", "cisco"],
+            "description": "The kind of video platform."
+        },
+        "tags": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "description": "An array of tags associated with the video."
+        },
+        "transcript": {
+            "type": ["string", "null"],
+            "default": null,
+            "description": "The transcript of the video."
+        },
+        "category": {
+            "type": "string",
+            "enum": [
+                "Configuration",
+                "Maintain & Operate",
+                "Design",
+                "Install & Upgrade",
+                "Troubleshooting"
+            ],
+            "description": "The category of the video."
+        },
+        "series": {
+            "type": "string",
+            "enum": [
+                "Cisco Catalyst 1200 Series Switches",
+                "Cisco Catalyst 1300 Series Switches",
+                "Cisco Business 110 Series Unmanaged Switches",
+                "Cisco Business 220 Series Smart Switches",
+                "Cisco Business 250 Series Smart Switches",
+                "Cisco Business 350 Series Managed Switches",
+                "Cisco 350 Series Managed Switches",
+                "Cisco 350X Series Stackable Managed Switches",
+                "Cisco 550X Series Stackable Managed Switches",
+                "RV100 Product Family",
+                "Cisco RV160 VPN Router",
+                "Cisco RV260 VPN Router",
+                "RV320 Product Family",
+                "RV340 Product Family",
+                "Cisco Business Wireless AC",
+                "Cisco Business Wireless AX",
+                "Cisco Small Business 100 Series Wireless Access Points",
+                "Cisco Small Business 300 Series Wireless Access Points",
+                "Cisco Small Business 500 Series Wireless Access Points",
+                "Cisco IP Phone 6800 Series with Multiplatform Firmware",
+                "Cisco IP Phone 7800 Series",
+                "Cisco IP Phone 8800 Series",
+                "Cisco Business Dashboard",
+                "Cisco Business Mobile App",
+                "Cisco Business FindIT"
+            ],
+            "default": "",
+            "title": "The series or product family name",
+            "examples": [
+                "Cisco Business 220 Series Smart Switches",
+                "Cisco Business 350 Series Managed Switches"
+            ]
+        }
+    },
+    "required": [
+        "title",
+        "published_date",
+        "description",
+        "url",
+        "video_id",
+        "views",
+        "likes",
+        "duration",
+        "comments",
+        "kind",
+        "tags",
+        "transcript",
+        "category",
+        "series"
+    ]
+}
