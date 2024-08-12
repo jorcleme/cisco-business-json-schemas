@@ -3,7 +3,7 @@ import requests
 import jsonschema.exceptions
 import logging
 from jsonschema import validate
-from typing import Literal, List, Dict
+from typing import Literal, List, Dict, Any
 from referencing import Registry, Resource
 from pathlib import Path
 
@@ -24,7 +24,7 @@ class SchemaValidator:
         self, schema_path: str, data_path: str, type: Literal["Article", "Video"]
     ):
         self.schema = json.loads(open(schema_path).read())
-        self.data = json.loads(open(data_path).read())
+        self.data: List[Dict[str, Any]] = json.loads(open(data_path).read())
         self._type = type
         self.logging_props = self.resolve_logging_properties()
         self.registry = Registry(retrieve=self.retrieve_via_http)
