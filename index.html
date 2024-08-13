@@ -19,14 +19,6 @@
             }
         </style>
 
-        <!-- <link
-            rel="stylesheet"
-            href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css"
-        />
-        <link
-            rel="stylesheet"
-            href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css"
-        /> -->
         <link rel="stylesheet" href="./assets/css/styles.css" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -36,8 +28,7 @@
         />
         <style>
             body {
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC',
-                    'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-family: 'Inter', sans-serif;
                 font-size: 14px;
                 line-height: 1.6;
             }
@@ -75,7 +66,6 @@
                 }
             }
         </style>
-
         <style>
             .markdown-alert {
                 padding: 0.5rem 1rem;
@@ -202,5 +192,95 @@
                 </tr>
             </tbody>
         </table>
+        <h2 id="how-to-use-it">How to use it</h2>
+        <pre><code class="language-bash">pip install jsonschema referencing
+</code></pre>
+        <pre><code class="language-python"><span class="hljs-keyword">import</span> json
+<span class="hljs-keyword">import</span> jsonschema
+<span class="hljs-keyword">from</span> jsonschema <span class="hljs-keyword">import</span> validate, RefResolver
+<span class="hljs-keyword">from</span> referencing <span class="hljs-keyword">import</span> Registry, Resource
+</code></pre>
+        <p>
+            Assume you are scraping videos or articles and need to verify each
+            against the schema
+        </p>
+        <pre><code class="language-python"><span class="hljs-comment"># Schema URLs</span>
+VIDEO_SCHEMA_URL = <span class="hljs-string">&quot;https://jorcleme.github.io/cisco-business-json-schemas/schemas/videos/videos.json&quot;</span>
+ARTICLE_SCHEMA_URL = <span class="hljs-string">&quot;https://jorcleme.github.io/cisco-business-json-schemas/schemas/articles/articles.json&quot;</span>
+
+<span class="hljs-comment"># Load and register the schemas</span>
+registry = Registry().with_resources(
+    [
+        (<span class="hljs-string">&quot;video&quot;</span>, Resource.from_contents(video_schema)),
+        (<span class="hljs-string">&quot;article&quot;</span>, Resource.from_contents(article_schema)),
+    ]
+)
+</code></pre>
+        <p>
+            <strong>Scrape Data</strong> Imagine you've scraped JSON data for
+            videos and articles. You would now validate this data against the
+            appropriate schema.
+        </p>
+        <pre><code class="language-python"><span class="hljs-comment"># Example scraped video data</span>
+video_data = {
+    <span class="hljs-string">&quot;title&quot;</span>: <span class="hljs-string">&quot;Cisco Tech Talk: Radius and Duo Authentication on a C1200 or C1300 Switch Part 2&quot;</span>,
+    <span class="hljs-string">&quot;published_date&quot;</span>: <span class="hljs-string">&quot;2024-05-16T15:11:42Z&quot;</span>,
+    <span class="hljs-string">&quot;description&quot;</span>: <span class="hljs-string">&quot;In this second, of a two-part edition of Cisco Tech Talk...&quot;</span>,
+    <span class="hljs-string">&quot;url&quot;</span>: <span class="hljs-string">&quot;https://www.youtube.com/embed/TSSFAraDSRM&quot;</span>,
+    <span class="hljs-string">&quot;video_id&quot;</span>: <span class="hljs-string">&quot;TSSFAraDSRM&quot;</span>,
+    <span class="hljs-string">&quot;views&quot;</span>: <span class="hljs-number">1308</span>,
+    <span class="hljs-string">&quot;likes&quot;</span>: <span class="hljs-number">12</span>,
+    <span class="hljs-string">&quot;duration&quot;</span>: <span class="hljs-string">&quot;PT3M48S&quot;</span>,
+    <span class="hljs-string">&quot;comments&quot;</span>: <span class="hljs-number">0</span>,
+    <span class="hljs-string">&quot;kind&quot;</span>: <span class="hljs-string">&quot;youtube&quot;</span>,
+    <span class="hljs-string">&quot;tags&quot;</span>: [<span class="hljs-string">&quot;c1200&quot;</span>, <span class="hljs-string">&quot;c1300&quot;</span>, <span class="hljs-string">&quot;catalyst&quot;</span>, <span class="hljs-string">&quot;cisco small business&quot;</span>],
+    <span class="hljs-string">&quot;transcript&quot;</span>: <span class="hljs-string">&quot;Welcome back in this second of a two-part episode of Cisco tech talk...&quot;</span>,
+    <span class="hljs-string">&quot;category&quot;</span>: <span class="hljs-string">&quot;Configuration&quot;</span>,
+    <span class="hljs-string">&quot;series&quot;</span>: <span class="hljs-string">&quot;Cisco Catalyst 1200 Series Switches&quot;</span>
+}
+
+<span class="hljs-comment"># Example scraped article data</span>
+article_data = {
+    <span class="hljs-string">&quot;series&quot;</span>: <span class="hljs-string">&quot;Cisco Business 220 Series Smart Switches&quot;</span>,
+    <span class="hljs-string">&quot;title&quot;</span>: <span class="hljs-string">&quot;Configure SNMP Communities on a CBS220 Series Switch&quot;</span>,
+    <span class="hljs-string">&quot;document_id&quot;</span>: <span class="hljs-string">&quot;1633639132343299&quot;</span>,
+    <span class="hljs-string">&quot;category&quot;</span>: <span class="hljs-string">&quot;Configuration&quot;</span>,
+    <span class="hljs-string">&quot;steps&quot;</span>: [
+        {
+            <span class="hljs-string">&quot;section&quot;</span>: <span class="hljs-string">&quot;Configure SNMP Community on a Switch&quot;</span>,
+            <span class="hljs-string">&quot;step_number&quot;</span>: <span class="hljs-number">1</span>,
+            <span class="hljs-string">&quot;text&quot;</span>: <span class="hljs-string">&quot;Log in to the web user interface (UI) of your switch.&quot;</span>
+        }
+    ],
+    <span class="hljs-string">&quot;type&quot;</span>: <span class="hljs-string">&quot;Article&quot;</span>
+}
+</code></pre>
+        <p>
+            <strong>Validate Data</strong> Use <code>validate</code> with the
+            custom <code>registry</code> to validate the scraped data against
+            the registered schemas
+        </p>
+        <pre><code class="language-python"><span class="hljs-comment"># Validate video data</span>
+<span class="hljs-keyword">for</span> video <span class="hljs-keyword">in</span> video_data:
+    <span class="hljs-keyword">try</span>:
+        validate(instance=video, schema=video_schema, registry=registry)
+        logger.info(
+            <span class="hljs-string">f&quot;Validation Successful for video id: <span class="hljs-subst">{video.get(<span class="hljs-string">&#x27;video_id&#x27;</span>, <span class="hljs-literal">None</span>)}</span>&quot;</span>
+        )
+    <span class="hljs-keyword">except</span> jsonschema.exceptions.ValidationError <span class="hljs-keyword">as</span> e:
+        logger.error(<span class="hljs-string">f&quot;Validation failed for video id: <span class="hljs-subst">{video.get(<span class="hljs-string">&#x27;video_id&#x27;</span>, <span class="hljs-literal">None</span>)}</span>&quot;</span>)
+
+<span class="hljs-comment"># Validate article data</span>
+<span class="hljs-keyword">for</span> article <span class="hljs-keyword">in</span> article_data:
+    <span class="hljs-keyword">try</span>:
+        validate(instance=article, schema=article_schema, resolver=registry)
+        logger.info(
+            <span class="hljs-string">f&quot;Validation Successful for article document id: <span class="hljs-subst">{article.get(<span class="hljs-string">&#x27;document_id&#x27;</span>, <span class="hljs-literal">None</span>)}</span>&quot;</span>
+        )
+    <span class="hljs-keyword">except</span> jsonschema.exceptions.ValidationError <span class="hljs-keyword">as</span> e:
+        logger.error(
+            <span class="hljs-string">f&quot;Validation failed for article document id: <span class="hljs-subst">{article.get(<span class="hljs-string">&#x27;document_id&#x27;</span>, <span class="hljs-literal">None</span>)}</span>&quot;</span>
+        )
+</code></pre>
     </body>
 </html>

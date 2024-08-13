@@ -30,21 +30,12 @@ VIDEO_SCHEMA_URL = "https://jorcleme.github.io/cisco-business-json-schemas/schem
 ARTICLE_SCHEMA_URL = "https://jorcleme.github.io/cisco-business-json-schemas/schemas/articles/articles.json"
 
 # Load and register the schemas
-registry = Registry().with_resources({
-    "video": Resource.from_contents({
-        "$ref": VIDEO_SCHEMA_URL
-    }),
-    "article": Resource.from_contents({
-        "$ref": ARTICLE_SCHEMA_URL
-    })
-})
-```
-
-Create a `RefResolver` that can resolve references using the Registry.
-
-```python
-# Create a resolver for the schemas
-resolver = RefResolver.from_schema({}, registry=registry)
+registry = Registry().with_resources(
+    [
+        ("video", Resource.from_contents(video_schema)),
+        ("article", Resource.from_contents(article_schema)),
+    ]
+)
 ```
 
 **Scrape Data**
@@ -87,17 +78,28 @@ article_data = {
 ```
 
 **Validate Data**
-Use `validate` with the custom `resolver` to validate the scraped data against the registered schemas
+Use `validate` with the custom `registry` to validate the scraped data against the registered schemas
 
 ```python
-try:
-    # Validate the video data
-    validate(instance=video_data, schema={"$ref": video_schema_url}, resolver=resolver)
-    print("Video validation successful!")
+# Validate video data
+for video in video_data:
+    try:
+        validate(instance=video, schema=video_schema, registry=registry)
+        logger.info(
+            f"Validation Successful for video id: {video.get('video_id', None)}"
+        )
+    except jsonschema.exceptions.ValidationError as e:
+        logger.error(f"Validation failed for video id: {video.get('video_id', None)}")
 
-    # Validate the article data
-    validate(instance=article_data, schema={"$ref": article_schema_url}, resolver=resolver)
-    print("Article validation successful!")
-except jsonschema.exceptions.ValidationError as e:
-    print(f"Validation error: {e.message}")
+# Validate article data
+for article in article_data:
+    try:
+        validate(instance=article, schema=article_schema, resolver=registry)
+        logger.info(
+            f"Validation Successful for article document id: {article.get('document_id', None)}"
+        )
+    except jsonschema.exceptions.ValidationError as e:
+        logger.error(
+            f"Validation failed for article document id: {article.get('document_id', None)}"
+        )
 ```
